@@ -98,7 +98,14 @@ def createModel(model_name, train_dir, val_dir, batch_size, num_epoch):
         validation_data=validation_generator,
         validation_steps=num_val // batch_size)
     plot_model_history(model_info, model_name)
-    model.save(model_name)
+    #model.save(model_name)
+    # serialize model to JSON
+    model_json = model.to_json()
+    with open(model_name.split(".")[0]+".json", "w") as json_file:
+        json_file.write(model_json)
+    # serialize weights to HDF5
+    model.save_weights(model_name)
+    print("Saved model to disk")
 
 
 if __name__ == "__main__":

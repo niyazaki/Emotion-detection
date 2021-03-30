@@ -9,14 +9,20 @@ from tensorflow.keras.layers import Conv2D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import MaxPooling2D
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import model_from_json
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 def display(model_name):
 
-    model = load_model(model_name)
-
+    #model = load_model(model_name)
+    json_file = open(model_name.split(".")[0]+".json", 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    model = model_from_json(loaded_model_json)
+    # load weights into new model
+    model.load_weights(model_name)
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
 

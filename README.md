@@ -95,7 +95,7 @@ python create_model.py -n modelName.h5
 
 This implementation by default detects emotions on all faces in the webcam feed. With a simple 4-layer CNN, the test accuracy reached ~75% in 30 epochs. 
 
-![Accuracy plot](imgs/accuracy.png)
+![Accuracy plot](imgs/graph.png)
   
 ## Algorithm
 
@@ -128,3 +128,11 @@ X Wang, D Athanasakis, J Shawe-Taylor, M Milakov, J Park, R Ionescu,
 M Popescu, C Grozea, J Bergstra, J Xie, L Romaszko, B Xu, Z Chuang, and
 
 Y. Bengio. arXiv 2013.
+
+FER+ :
+@inproceedings{BarsoumICMI2016,
+    title={Training Deep Networks for Facial Expression Recognition with Crowd-Sourced Label Distribution},
+    author={Barsoum, Emad and Zhang, Cha and Canton Ferrer, Cristian and Zhang, Zhengyou},
+    booktitle={ACM International Conference on Multimodal Interaction (ICMI)},
+    year={2016}
+}

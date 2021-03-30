@@ -109,22 +109,21 @@ if __name__ == "__main__":
                         help="Name of the output (model) file. Don't forget the \".h5\" extension",
                         required=True)
 
-    parser.add_argument("-td",
+    parser.add_argument("-t",
                         "--train_dir",
                         type=str,
                         help="Path to the main folder with the training dataset",
                         nargs="?",
                         default="data/train")
 
-    parser.add_argument("-vd",
+    parser.add_argument("-v",
                         "--val_dir",
                         type=str,
                         help="Path to the main folder with the validating (test) dataset",
                         nargs="?",
                         default="data/test")
 
-    parser.add_argument("-b",
-                        "--batch_size",
+    parser.add_argument("-b","--batch_size",
                         type=int,
                         help="Number of elements in batch, default is 64",
                         nargs="?",

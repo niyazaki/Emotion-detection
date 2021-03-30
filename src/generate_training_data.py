@@ -43,7 +43,7 @@ def main(base_folder, fer_path, ferplus_path):
     are stored in their corresponding folder for the trainer to use.
 
     Args:
-        base_folder(str): The base folder that contains  'FER2013Train', 'FER2013Valid' and 'FER2013Test'
+        base_folder(str): The base folder that contains  'Train', 'Valid' and 'Test'
                           subfolder.
         fer_path(str): The full path of fer2013.csv file.
         ferplus_path(str): The full path of fer2013new.csv file.

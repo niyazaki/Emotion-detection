@@ -11,6 +11,7 @@ import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+
 def plot_model_history(model_history, model_name):
     """
     Plot Accuracy and Loss curves given the model_history
@@ -47,9 +48,9 @@ def createModel(model_name, train_dir, val_dir, batch_size, num_epoch):
     # number of emotions = the number of folders in data/train or data/test
     output_size = len(emotions)
     num_train = sum([len(os.listdir(os.path.join(train_dir, emotion)))
-                         for emotion in emotions])
+                     for emotion in emotions])
     num_val = sum([len(os.listdir(os.path.join(val_dir, emotion)))
-                       for emotion in emotions])
+                   for emotion in emotions])
     train_datagen = ImageDataGenerator(rescale=1./255)
     val_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -105,9 +106,8 @@ if __name__ == "__main__":
     parser.add_argument("-n",
                         "--model_name",
                         type=str,
-                        help="Name of the output (model) file.",
-                        nargs="?",
-                        default="FerPlusModel.h5")
+                        help="Name of the output (model) file. Don't forget the \".h5\" extension",
+                        required=True)
 
     parser.add_argument("-td",
                         "--train_dir",

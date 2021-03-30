@@ -12,8 +12,9 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+
 def display(model_name):
-        
+
     model = load_model(model_name)
 
     # prevents openCL usage and unnecessary logging messages
@@ -35,7 +36,8 @@ def display(model_name):
             gray, scaleFactor=1.3, minNeighbors=5)
 
         for (x, y, w, h) in faces:
-            colors = {"white": (255,255,255), "black": (0, 0, 0), "red" : (0,0,255) }
+            colors = {"white": (255, 255, 255), "black": (
+                0, 0, 0), "red": (0, 0, 255)}
             color = colors["red"]
             cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), color, 2)
             roi_gray = gray[y:y + h, x:x + w]
@@ -54,14 +56,15 @@ def display(model_name):
     cap.release()
     cv2.destroyAllWindows()
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-n",
                         "--model_name",
                         type=str,
-                        help="Name of the output (model) file.",
+                        help="Name of the model file. Don't forget the \".h5\" extension",
                         nargs="?",
-                        default="FerPlusModel.h5")
+                        default="ferplusModel.h5")
 
     args = parser.parse_args()
-    display(model_name= args.model_name)
+    display(model_name=args.model_name)

@@ -93,9 +93,9 @@ python create_model.py -n modelName.h5
 | Number of epoch |-e / --num_epoch| 30 |  |
 
 
-This implementation by default detects emotions on all faces in the webcam feed. With a simple 4-layer CNN, the test accuracy reached ~75% in 30 epochs. 
+This implementation by default detects emotions on all faces in the webcam feed. With a simple 4-layer CNN, the test accuracy reached 76,53% in 30 epochs. 
 
-![Accuracy plot](imgs/graph.png)
+![Accuracy plot](imgs/ferplusModel.png)
   
 ## Algorithm
 

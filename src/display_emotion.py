@@ -14,15 +14,29 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
-def display(model_name):
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0') or v == None:
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
-    #model = load_model(model_name)
-    json_file = open(model_name.split(".")[0]+".json", 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
-    model = model_from_json(loaded_model_json)
-    # load weights into new model
-    model.load_weights(model_name)
+
+def display(model_name, boolJsonFormat):
+    # Loading the model jsonformat or complete format
+    if boolJsonFormat:
+        json_file = open(model_name+".json", 'r')
+        loaded_model_json = json_file.read()
+        json_file.close()
+        model = model_from_json(loaded_model_json)
+        # load weights into new model
+        model.load_weights(model_name+".h5")
+    else:
+        model = load_model(model_name)
+
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
 
@@ -40,11 +54,12 @@ def display(model_name):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = facecasc.detectMultiScale(
             gray, scaleFactor=1.3, minNeighbors=5)
+        colors = {"white": (255, 255, 255), "black": (
+            0, 0, 0), "red": (0, 0, 255)}
+        color = colors["red"]
 
         for (x, y, w, h) in faces:
-            colors = {"white": (255, 255, 255), "black": (
-                0, 0, 0), "red": (0, 0, 255)}
-            color = colors["red"]
+
             cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), color, 2)
             roi_gray = gray[y:y + h, x:x + w]
             cropped_img = np.expand_dims(np.expand_dims(
@@ -53,6 +68,20 @@ def display(model_name):
             maxindex = int(np.argmax(prediction))
             cv2.putText(frame, emotion_dict[maxindex], (x+20, y-60),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
+
+            #Adding the emoji on the face
+            emoji = "faces/{}.png".format(emotion_dict[maxindex])
+            overlay = cv2.imread(emoji,-1)
+            rows,cols,channels = overlay.shape
+            overlay = cv2.resize(overlay,(w,h))
+            y1, y2 = y, y + overlay.shape[0]
+            x1, x2 = x, x + overlay.shape[1]
+
+            alpha_s = overlay[:, :, 3] / 255.0
+            alpha_l = 1.0 - alpha_s
+            for c in range(0, 3):
+                frame[y1:y2, x1:x2, c] = (alpha_s * overlay[:, :, c] +
+                                          alpha_l * frame[y1:y2, x1:x2, c])
 
         cv2.imshow('Video', cv2.resize(
             frame, (1600, 960), interpolation=cv2.INTER_CUBIC))
@@ -65,12 +94,21 @@ def display(model_name):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+
+    parser.add_argument("-json",
+                        "--json_format",
+                        type=str2bool,
+                        help="False by default. If true, will generate the model in a 2 files format, one json for the architecture and one h5 file for the weights. If False, model is saved as a complete model in a h5 file. Usage: -json or -json < one of 'yes', 'true', 't', 'y', '1' > for True. Nothing or -json < one of 'no', 'false', 'f', 'n', '0'>",
+                        nargs="?",
+                        const=True,
+                        default=False)
     parser.add_argument("-n",
                         "--model_name",
                         type=str,
-                        help="Name of the model file. Don't forget the \".h5\" extension",
+                        help="Name of the model file. Without extension",
                         nargs="?",
-                        default="ferplusModel.h5")
+                        default="ferplusModel")
 
     args = parser.parse_args()
-    display(model_name=args.model_name)
+    print("Press Q to [Q]uit or Ctrl+C for CommandLine Interrupt")
+    display(model_name=args.model_name, boolJsonFormat = args.json_format)

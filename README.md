@@ -44,10 +44,11 @@ python display_emotion.py
 
 | args | - |  default value | required |
 |:--:|:--:|:--:|:--:|
-| Model name | -n / --model_name | ferplusModel.h5 | |
+| Model name | -n / --model_name | ferplusModel | |
+| Json format |-json / --json_format| False |  |
 
 
- ## Generate Dataset and train Model
+## Generate Dataset and train Model
 
 ### Generate Dataset
 
@@ -70,6 +71,7 @@ python generate_training_data.py -d data -fer FER/fer2013.csv -ferplus FER/fer20
 | FER+ path | -ferplus / --ferplus_path| | Yes |
 
 
+
 * In FER+, labels are given as probability of being one or another emotion. Here we only take the maximum value and its corresponding emotion. In case of a tie, we take the most probable value (they're sorted from most probable to less probable from left to right)
 * Here we only use Train and Test, so all the pictures in Valid can be put in the Test folder
 
@@ -81,7 +83,7 @@ python generate_training_data.py -d data -fer FER/fer2013.csv -ferplus FER/fer20
 
 cd src
 
-python create_model.py -n modelName.h5
+python create_model.py -n modelName
 
 ```
 | args | - |  default value | required |
@@ -91,6 +93,7 @@ python create_model.py -n modelName.h5
 | Test path | -v / --val_dir| data/test |  |
 | Batch size |-b / --batch_size| 64 |  |
 | Number of epoch |-e / --num_epoch| 30 |  |
+| Json format |-json / --json_format| False |  |
 
 
 This implementation by default detects emotions on all faces in the webcam feed. With a simple 4-layer CNN, the test accuracy reached 76,53% in 30 epochs. 

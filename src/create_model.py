@@ -12,6 +12,17 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0') or v == None:
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 def plot_model_history(model_history, model_name):
     """
     Plot Accuracy and Loss curves given the model_history
@@ -39,11 +50,11 @@ def plot_model_history(model_history, model_name):
     axs[1].set_xticks(np.arange(
         1, len(model_history.history['loss'])+1), len(model_history.history['loss'])/10)
     axs[1].legend(['train', 'val'], loc='best')
-    fig.savefig(model_name.split(".")[0]+".png")
+    fig.savefig(model_name+".png")
     plt.show()
 
 
-def createModel(model_name, train_dir, val_dir, batch_size, num_epoch):
+def createModel(model_name, train_dir, val_dir, batch_size, num_epoch, boolJsonFormat):
     emotions = os.listdir(val_dir)
     # number of emotions = the number of folders in data/train or data/test
     output_size = len(emotions)
@@ -88,7 +99,6 @@ def createModel(model_name, train_dir, val_dir, batch_size, num_epoch):
     model.add(Dropout(0.5))
     model.add(Dense(output_size, activation='softmax'))
 
-    # If you want to train the same model or try other models, go for this
     model.compile(loss='categorical_crossentropy', optimizer=Adam(
         lr=0.0001, decay=1e-6), metrics=['accuracy'])
     model_info = model.fit(
@@ -98,14 +108,18 @@ def createModel(model_name, train_dir, val_dir, batch_size, num_epoch):
         validation_data=validation_generator,
         validation_steps=num_val // batch_size)
     plot_model_history(model_info, model_name)
-    #model.save(model_name)
-    # serialize model to JSON
-    model_json = model.to_json()
-    with open(model_name.split(".")[0]+".json", "w") as json_file:
-        json_file.write(model_json)
-    # serialize weights to HDF5
-    model.save_weights(model_name)
-    print("Saved model to disk")
+
+    if boolJsonFormat:
+        # serialize model to JSON
+        model_json = model.to_json()
+        with open(model_name+".json", "w") as json_file:
+            json_file.write(model_json)
+        # serialize weights to HDF5
+        model.save_weights(model_name+".h5")
+        print("Saved model to disk (json (2 files) format)")
+    else:
+        model.save(model_name+".h5")
+        print("Saved model to disk (complete (1 file) format)")
 
 
 if __name__ == "__main__":
@@ -113,7 +127,7 @@ if __name__ == "__main__":
     parser.add_argument("-n",
                         "--model_name",
                         type=str,
-                        help="Name of the output (model) file. Don't forget the \".h5\" extension",
+                        help="Name of the output (model) file. Without extension",
                         required=True)
 
     parser.add_argument("-t",
@@ -130,7 +144,7 @@ if __name__ == "__main__":
                         nargs="?",
                         default="data/test")
 
-    parser.add_argument("-b","--batch_size",
+    parser.add_argument("-b", "--batch_size",
                         type=int,
                         help="Number of elements in batch, default is 64",
                         nargs="?",
@@ -143,7 +157,15 @@ if __name__ == "__main__":
                         nargs="?",
                         default=30)
 
+    parser.add_argument("-json",
+                        "--json_format",
+                        type=str2bool,
+                        help="False by default. If true, will generate the model in a 2 files format, one json for the architecture and one h5 file for the weights. If False, model is saved as a complete model in a h5 file. Usage: -json or -json < one of 'yes', 'true', 't', 'y', '1' > for True. Nothing or -json < one of 'no', 'false', 'f', 'n', '0'>",
+                        nargs="?",
+                        const=True,
+                        default=False)
+
     args = parser.parse_args()
 
     createModel(model_name=args.model_name, train_dir=args.train_dir,
-                val_dir=args.val_dir, batch_size=args.batch_size, num_epoch=args.num_epoch)
+                val_dir=args.val_dir, batch_size=args.batch_size, num_epoch=args.num_epoch, boolJsonFormat=args.json_format)

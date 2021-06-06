@@ -98,7 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("-json",
                         "--json_format",
                         type=str2bool,
-                        help="False by default. If true, will generate the model in a 2 files format, one json for the architecture and one h5 file for the weights. If False, model is saved as a complete model in a h5 file. Usage: -json or -json < one of 'yes', 'true', 't', 'y', '1' > for True. Nothing or -json < one of 'no', 'false', 'f', 'n', '0'>",
+                        help="False by default. If true, will read the model in a 2 files format, one json for the architecture and one h5 file for the weights. If False, model is read as a complete model in a h5 file. Usage: -json or -json < one of 'yes', 'true', 't', 'y', '1' > for True. Nothing or -json < one of 'no', 'false', 'f', 'n', '0' >",
                         nargs="?",
                         const=True,
                         default=False)

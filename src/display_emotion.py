@@ -35,7 +35,7 @@ def display(model_name, boolJsonFormat):
         # load weights into new model
         model.load_weights(model_name+".h5")
     else:
-        model = load_model(model_name)
+        model = load_model(model_name+".h5")
 
     # prevents openCL usage and unnecessary logging messages
     cv2.ocl.setUseOpenCL(False)
@@ -110,5 +110,6 @@ if __name__ == "__main__":
                         default="ferplusModel")
 
     args = parser.parse_args()
-    print("Press Q to [Q]uit or Ctrl+C for CommandLine Interrupt")
+    for i in range(5) :
+        print("Press Q to [Q]uit or Ctrl+C for CommandLine Interrupt")
     display(model_name=args.model_name, boolJsonFormat = args.json_format)

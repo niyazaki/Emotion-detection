@@ -82,6 +82,7 @@ def createModel(model_name, train_dir, val_dir, batch_size, num_epoch, boolJsonF
     # Create the model
     model = Sequential()
 
+        #Input shape : 48x48 pixels images, 1 for black and white
     model.add(Conv2D(32, kernel_size=(3, 3),
                      activation='relu', input_shape=(48, 48, 1)))
     model.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))

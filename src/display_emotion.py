@@ -70,18 +70,18 @@ def display(model_name, boolJsonFormat):
                         cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2, cv2.LINE_AA)
 
             #Adding the emoji on the face
-            emoji = "faces/{}.png".format(emotion_dict[maxindex])
-            overlay = cv2.imread(emoji,-1)
-            rows,cols,channels = overlay.shape
-            overlay = cv2.resize(overlay,(w,h))
-            y1, y2 = y, y + overlay.shape[0]
-            x1, x2 = x, x + overlay.shape[1]
+            emojiToDisplay = "faces/{}.png".format(emotion_dict[maxindex])
+            emojiOverlay = cv2.imread(emojiToDisplay,-1)
+            rows,cols,channels = emojiOverlay.shape
+            emojiOverlay = cv2.resize(emojiOverlay,(w,h))
+            y1, y2 = y, y + emojiOverlay.shape[0]
+            x1, x2 = x, x + emojiOverlay.shape[1]
 
-            alpha_s = overlay[:, :, 3] / 255.0
+            alpha_s = emojiOverlay[:, :, 3] / 255.0
             alpha_l = 1.0 - alpha_s
-            for c in range(0, 3):
-                frame[y1:y2, x1:x2, c] = (alpha_s * overlay[:, :, c] +
-                                          alpha_l * frame[y1:y2, x1:x2, c])
+            for i in range(0, 3):
+                frame[y1:y2, x1:x2, i] = (alpha_s * emojiOverlay[:, :, i] +
+                                          alpha_l * frame[y1:y2, x1:x2, i])
 
         cv2.imshow('Video', cv2.resize(
             frame, (1600, 960), interpolation=cv2.INTER_CUBIC))
